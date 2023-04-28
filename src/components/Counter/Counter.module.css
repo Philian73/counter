@@ -1,0 +1,61 @@
+.counter {
+  padding: 1rem;
+  border: 3px solid #6fe0f8;
+  background-color: #2d2a35;
+}
+
+.counterDisplay {
+  min-height: 12.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+  background-color: #6fe0f8;
+}
+
+.counterText {
+  font-size: 2rem;
+}
+
+.counterTextError {
+  color: red;
+}
+
+.counterControl {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 10px;
+  border: 3px solid #6fe0f8;
+}
+
+.counterBtn {
+  font-size: 2rem;
+  background-color: #6fe0f8;
+  padding: 0.5em 1em;
+  border-radius: 10px;
+  -webkit-transition: all 0.3s ease 0s;
+  -moz-transition: all 0.3s ease 0s;
+  -ms-transition: all 0.3s ease 0s;
+  -o-transition: all 0.3s ease 0s;
+  transition: all 0.3s ease 0s;
+}
+
+.counterBtn:not(:disabled):hover {
+  background-color: #0a7f96;
+}
+
+.counterBtn:not(:disabled):active {
+  -webkit-transform: translate(1px, 2px);
+  -moz-transform: translate(1px, 2px);
+  -ms-transform: translate(1px, 2px);
+  -o-transform: translate(1px, 2px);
+  transform: translate(1px, 2px);
+}
+
+.counterBtn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
