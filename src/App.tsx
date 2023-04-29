@@ -4,7 +4,7 @@ import { Counter } from './components/Counter/Counter.tsx'
 const App = () => {
   return (
     <div className="wrapper">
-      <Counter min={5} max={12} />
+      <Counter id={1} min={5} max={12} />
     </div>
   )
 }
