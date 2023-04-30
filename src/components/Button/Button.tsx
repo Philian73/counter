@@ -1,5 +1,7 @@
 import { FC } from 'react'
 
+import s from './Button.module.css'
+
 type PropsType = {
   name: string
   onClick: () => void
@@ -8,7 +10,11 @@ type PropsType = {
 }
 export const Button: FC<PropsType> = ({ name, onClick, disabled, className }) => {
   return (
-    <button className={className} onClick={onClick} disabled={disabled}>
+    <button
+      className={`${s.btn}` + (className ? ' ' + className : '')}
+      onClick={onClick}
+      disabled={disabled}
+    >
       {name}
     </button>
   )
