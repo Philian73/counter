@@ -1,0 +1,7 @@
+.counterSettingsText {
+  font-size: 2rem;
+}
+
+.counterSettingsInputError {
+  border: 2px solid red;
+}
