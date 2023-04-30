@@ -1,0 +1,7 @@
+.counterText {
+  font-size: 2rem;
+}
+
+.counterTextError {
+  color: red;
+}
