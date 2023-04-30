@@ -1,8 +1,9 @@
 import { ChangeEvent, FC, useEffect, useState } from 'react'
 
-import { Button } from '../Button/Button.tsx'
-
 import s from './Counter.module.css'
+import { ERRORS_STATUS } from './counter.ts'
+import { Main } from './Main/Main.tsx'
+import { Settings } from './Settings/Settings.tsx'
 
 type PropsType = {
   id: number
@@ -10,111 +11,75 @@ type PropsType = {
   max: number
 }
 export const Counter: FC<PropsType> = ({ id, min, max }) => {
-  const [counterMinValue, setCounterMinValue] = useState(min)
-  const [counterMaxValue, setCounterMaxValue] = useState(max)
-  const [counterValue, setCounterValue] = useState(counterMinValue)
+  const [minValue, setMinValue] = useState(min)
+  const [maxValue, setMaxValue] = useState(max)
+  const [currentValue, setCurrentValue] = useState(minValue)
   const [status, setStatus] = useState('')
 
   useEffect(() => {
     const counterMinValueAsString = localStorage.getItem(`counterMinValue/${id}`)
     const counterMaxValueAsString = localStorage.getItem(`counterMaxValue/${id}`)
-
-    counterMinValueAsString && setCounterMinValue(JSON.parse(counterMinValueAsString))
-    counterMaxValueAsString && setCounterMaxValue(JSON.parse(counterMaxValueAsString))
-  }, [])
-  useEffect(() => {
     const counterValueAsString = localStorage.getItem(`counterCurrentValue/${id}`)
 
-    counterValueAsString && setCounterValue(JSON.parse(counterValueAsString))
+    counterMinValueAsString && setMinValue(JSON.parse(counterMinValueAsString))
+    counterMaxValueAsString && setMaxValue(JSON.parse(counterMaxValueAsString))
+    counterValueAsString && setCurrentValue(JSON.parse(counterValueAsString))
   }, [])
   useEffect(() => {
-    localStorage.setItem(`counterCurrentValue/${id}`, JSON.stringify(counterValue))
-  }, [counterValue])
+    localStorage.setItem(`counterCurrentValue/${id}`, JSON.stringify(currentValue))
+  }, [currentValue])
 
-  const incrementHandler = () => counterValue < counterMaxValue && setCounterValue(counterValue + 1)
-  const resetHandler = () => counterValue > counterMinValue && setCounterValue(counterMinValue)
+  const incrementHandler = () => currentValue < maxValue && setCurrentValue(prev => prev + 1)
+  const resetHandler = () => currentValue > minValue && setCurrentValue(minValue)
 
   const changeCounterMinValueHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    setCounterMinValue(Number(e.currentTarget.value))
-    if (Number(e.currentTarget.value) >= counterMaxValue) {
-      setStatus('incorrect value')
+    setMinValue(Number(e.currentTarget.value))
+    if (Number(e.currentTarget.value) >= maxValue) {
+      setStatus(ERRORS_STATUS.incorrect)
     } else {
-      setStatus('set value pls')
+      setStatus(ERRORS_STATUS.change)
     }
   }
   const changeCounterMaxValueHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    setCounterMaxValue(Number(e.currentTarget.value))
-    if (Number(e.currentTarget.value) <= counterMinValue) {
-      setStatus('incorrect value')
+    setMaxValue(Number(e.currentTarget.value))
+    if (Number(e.currentTarget.value) <= minValue) {
+      setStatus(ERRORS_STATUS.incorrect)
     } else {
-      setStatus('set value pls')
+      setStatus(ERRORS_STATUS.change)
     }
   }
 
   const setNewValuesHandler = () => {
     if (status) {
       setStatus('')
-      localStorage.setItem(`counterMinValue/${id}`, JSON.stringify(counterMinValue))
-      localStorage.setItem(`counterMaxValue/${id}`, JSON.stringify(counterMaxValue))
-      setCounterValue(counterMinValue)
+      localStorage.setItem(`counterMinValue/${id}`, JSON.stringify(minValue))
+      localStorage.setItem(`counterMaxValue/${id}`, JSON.stringify(maxValue))
+      setCurrentValue(minValue)
     }
   }
 
-  const textErrorClasses = status
-    ? s.counterText + `${counterMinValue >= counterMaxValue ? ' ' + s.counterTextError : ''}`
-    : s.counterText + `${counterValue === counterMaxValue ? ' ' + s.counterTextError : ''}`
-
   return (
-    <div className={s.test}>
-      <div className={s.counter}>
-        <div className={s.counterDisplay}>
-          {!status && <span className={textErrorClasses}>{counterValue}</span>}
-          {status && <span className={textErrorClasses}>{status}</span>}
-        </div>
-        <div className={s.counterControl}>
-          <Button
-            className={s.counterBtn}
-            name="inc"
-            onClick={incrementHandler}
-            disabled={counterValue === counterMaxValue || !!status}
-          />
-          <Button
-            className={s.counterBtn}
-            name="reset"
-            onClick={resetHandler}
-            disabled={counterValue === counterMinValue || !!status}
-          />
-        </div>
-      </div>
-
-      <div className={s.counter}>
-        <div className={s.counterDisplay}>
-          <div>
-            <div style={{ marginBottom: '10px' }}>
-              <input
-                type="number"
-                value={counterMinValue}
-                onChange={changeCounterMinValueHandler}
-              />
-            </div>
-            <div>
-              <input
-                type="number"
-                value={counterMaxValue}
-                onChange={changeCounterMaxValueHandler}
-              />
-            </div>
-          </div>
-        </div>
-        <div className={s.counterControl}>
-          <Button
-            className={s.counterBtn}
-            name="set"
-            onClick={setNewValuesHandler}
-            disabled={counterMinValue >= counterMaxValue}
-          />
-        </div>
-      </div>
+    <div className={s.counter}>
+      {!status ? (
+        <Main
+          minValue={minValue}
+          maxValue={maxValue}
+          currentValue={currentValue}
+          status={status}
+          setStatus={setStatus}
+          incrementHandler={incrementHandler}
+          resetHandler={resetHandler}
+        />
+      ) : (
+        <Settings
+          minValue={minValue}
+          maxValue={maxValue}
+          status={status}
+          changeCounterMinValueHandler={changeCounterMinValueHandler}
+          changeCounterMaxValueHandler={changeCounterMaxValueHandler}
+          setNewValuesHandler={setNewValuesHandler}
+        />
+      )}
     </div>
   )
 }
