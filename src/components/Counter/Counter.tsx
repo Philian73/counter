@@ -33,16 +33,22 @@ export const Counter: FC<PropsType> = ({ id, min, max }) => {
   const resetHandler = () => currentValue > minValue && setCurrentValue(minValue)
 
   const changeCounterMinValueHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    setMinValue(Number(e.currentTarget.value))
-    if (Number(e.currentTarget.value) >= maxValue) {
+    const numberToValue = Number(e.currentTarget.value)
+
+    numberToValue >= -1 && numberToValue <= maxValue && setMinValue(numberToValue)
+
+    if (numberToValue >= maxValue || numberToValue <= -1) {
       setStatus(ERRORS_STATUS.incorrect)
     } else {
       setStatus(ERRORS_STATUS.change)
     }
   }
   const changeCounterMaxValueHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    setMaxValue(Number(e.currentTarget.value))
-    if (Number(e.currentTarget.value) <= minValue) {
+    const numberToValue = Number(e.currentTarget.value)
+
+    numberToValue >= minValue && setMaxValue(numberToValue)
+
+    if (Number(e.currentTarget.value) <= minValue || minValue === -1) {
       setStatus(ERRORS_STATUS.incorrect)
     } else {
       setStatus(ERRORS_STATUS.change)
